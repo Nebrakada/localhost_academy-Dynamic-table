@@ -34,8 +34,9 @@
         {
           _id: "5e9df38220c8ca67ea7903ae",
           name: "Francine Fleming",
+              nickname: 'Ivy Blue',
           age: 31,
-          gender: "female",
+          // gender: "female",
           company: "ZEDALIS",
           email: "francinefleming@zedalis.com",
           phone: "+1 (857) 548-3417",
@@ -56,7 +57,7 @@
           gender: "male",
           company: "MARKETOID",
           email: "buckleyharper@marketoid.com",
-          phone: "+1 (931) 478-3483",
+          // phone: "+1 (931) 478-3483",
           tags: [
             "Lorem",
             "commodo",
@@ -90,8 +91,9 @@
           name: "Esperanza Gates",
           age: 32,
           gender: "female",
-          company: "OVERFORK",
+          // company: "OVERFORK",
           email: "esperanzagates@overfork.com",
+          'work email': 'esperanzawork@mycompany.com',
           phone: "+1 (928) 540-3318",
           tags: ["sit", "qui", "labore", "ea", "veniam", "non", "dolor"],
         },
@@ -102,7 +104,7 @@
           gender: "male",
           company: "CODAX",
           email: "mccarthybrooks@codax.com",
-          phone: "+1 (886) 592-3578",
+          // phone: "+1 (886) 592-3578",
           tags: [
             "eiusmod",
             "aliqua",
@@ -192,9 +194,9 @@
 
       function getTable(data) {
         const dynamicTable = document.querySelector(".dynamic-table");
-        const headerNames = getHeaderValues(data, true);
-        const headerSection = getHtmlHeaderSection(headerNames);
-        const bodySection = getHtmlBodySection(data, headerNames);
+        const headerNames = createHeaderValues(data, true);
+        const headerSection = createHtmlHeaderSection(headerNames);
+        const bodySection = createHtmlBodySection(data, headerNames);
 
         dynamicTable.innerHTML = `<table>
                   <thead><tr>
@@ -206,27 +208,31 @@
                 </table>`;
       }
 
-      function getHeaderValues(data, withPrivateFields = true) {
-        let headerValues = Object.keys(data[0]);
+      function createHeaderValues(data, withPrivateFields = true) {
+        //todo wyciagnac unikalne klucze ze wszystkich obiektow, na wypadek gdyby ktorys czegos nie mial
+        let allHeaders =[];
+        data.forEach(element => {
+          allHeaders.push(...Object.keys(element))
+        });
+        const uniqueHeaderValues = [...new Set(allHeaders)];
+
         if (!withPrivateFields) {
-          return headerValues.filter((val) => !val.startsWith("_"));
+          return uniqueHeaderValues.filter((val) => !val.startsWith("_"));
         }
-        return headerValues;
+        return uniqueHeaderValues;
       }
 
-      function getHtmlHeaderSection(headers) {
+      function createHtmlHeaderSection(headers) {
         if (headers.length === 0) {
           return "";
         }
         return headers.map((header) => `<th>${header}</th>`).join("");
       }
 
-      function getHtmlBodySection(data, headerNames) {
-        let bodySection = "";
-        data.forEach((element) => {
-          bodySection += createTableRow(element, headerNames);
-        });
-        return bodySection;
+      function createHtmlBodySection(data, headerNames) {
+        return data
+          .map((element) => createTableRow(element, headerNames))
+          .join("");
       }
 
       function createTableRow(rowObj, headerNames) {
@@ -240,6 +246,9 @@
       }
 
       function formatValue(val) {
+        if (!val) {
+          return '';
+        }
         return Array.isArray(val) ? val.join(", ") : val;
       }
 
