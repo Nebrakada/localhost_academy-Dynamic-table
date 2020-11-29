@@ -34,7 +34,7 @@
         {
           _id: "5e9df38220c8ca67ea7903ae",
           name: "Francine Fleming",
-              nickname: 'Ivy Blue',
+          nickname: "Ivy Blue",
           age: 31,
           // gender: "female",
           company: "ZEDALIS",
@@ -93,7 +93,7 @@
           gender: "female",
           // company: "OVERFORK",
           email: "esperanzagates@overfork.com",
-          'work email': 'esperanzawork@mycompany.com',
+          "work email": "esperanzawork@mycompany.com",
           phone: "+1 (928) 540-3318",
           tags: ["sit", "qui", "labore", "ea", "veniam", "non", "dolor"],
         },
@@ -164,10 +164,13 @@
         {
           _id: "5e9df3823dc9e1a5ba14a100",
           name: "Jaime Alvarez",
+          nickname: "Jamie Lanister",
+          "mother name": "Lanister",
           age: 34,
           gender: "female",
           company: "ISOLOGICA",
           email: "jaimealvarez@isologica.com",
+          "work email": "Jaimie@mycomp.com",
           phone: "+1 (974) 498-3471",
           tags: [
             "laboris",
@@ -199,26 +202,33 @@
         const bodySection = createHtmlBodySection(data, headerNames);
 
         dynamicTable.innerHTML = `<table>
-                  <thead><tr>
-                ${headerSection}
-                </tr></thead>
-                <tbody>
-                ${bodySection}
-                </tbody>
-                </table>`;
+                        <thead><tr>
+                      ${headerSection}
+                      </tr></thead>
+                      <tbody>
+                      ${bodySection}
+                      </tbody>
+                      </table>`;
       }
 
       function createHeaderValues(data, withPrivateFields = true) {
-        //todo wyciagnac unikalne klucze ze wszystkich obiektow, na wypadek gdyby ktorys czegos nie mial
-        let allHeaders =[];
-        data.forEach(element => {
-          allHeaders.push(...Object.keys(element))
-        });
-        const uniqueHeaderValues = [...new Set(allHeaders)];
+        const uniqueHeaderValues = getUniqueOrderedHeaders(data);
 
         if (!withPrivateFields) {
           return uniqueHeaderValues.filter((val) => !val.startsWith("_"));
         }
+        return uniqueHeaderValues;
+      }
+
+      function getUniqueOrderedHeaders(data) {
+        const headersWithIndex = [];
+        data.forEach((element, index) => {
+          const elementKeys = Object.keys(element);
+          elementKeys.forEach((key, keyIdx) => {
+            headersWithIndex.splice(keyIdx, 0, key);
+          });
+        });
+        const uniqueHeaderValues = [...new Set(headersWithIndex)];
         return uniqueHeaderValues;
       }
 
@@ -247,7 +257,7 @@
 
       function formatValue(val) {
         if (!val) {
-          return '';
+          return "";
         }
         return Array.isArray(val) ? val.join(", ") : val;
       }
